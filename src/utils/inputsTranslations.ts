@@ -5,7 +5,7 @@ interface Inputs {
 const inputsTranslation: Inputs = {
   min: 'Минимальное значение Y',
   max: 'Максимальное значение Y',
-  minorTickInterval: 'Цена деления Y',
+  tickInterval: 'Цена деления Y',
 };
 
 export default inputsTranslation;

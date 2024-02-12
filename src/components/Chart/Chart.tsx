@@ -15,7 +15,7 @@ const Chart: FunctionComponent = () => {
   const [yAxis, setYAxis] = useState<Highcharts.YAxisOptions>({
     min: null,
     max: null,
-    minorTickInterval: 'auto',
+    tickInterval: 1,
   });
 
   exportingOption(Highcharts);
@@ -29,15 +29,31 @@ const Chart: FunctionComponent = () => {
     xAxis: {
       categories,
       tickInterval: Math.ceil(categories.length / desiredTickCount),
+      gridLineWidth: 1,
+      gridLineColor: '#595959',
       title: {
         text: 'Time',
-      }
+      },
+      labels: {
+        style: {
+          color: '#fff',
+        },
+      },
     },
     yAxis: {
       ...yAxis,
       title: {
         text: 'Watts',
-      }
+      },
+      gridLineColor: '#595959',
+      labels: {
+        style: {
+          color: '#fff',
+        },
+      },
+      grid: {
+
+      },
     },
     series: [
       {

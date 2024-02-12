@@ -19,7 +19,8 @@ const Settings: FunctionComponent<SettingsProps> = ({ setYAxis }) => {
     const formDataObject: { [key: string]: number | null } = {};
     formData.forEach((value, key) => {
       const data = value as string;
-      formDataObject[key] = Number(data) || null;
+      const numberedData = Number(data);
+      formDataObject[key] = isNaN(numberedData) ? null : numberedData;
     });
 
     console.log(formDataObject);
@@ -32,7 +33,7 @@ const Settings: FunctionComponent<SettingsProps> = ({ setYAxis }) => {
       <form ref={formRef} onSubmit={setSettings}>
         <Input name="min" />
         <Input name="max" />
-        <Input name="minorTickInterval" />
+        <Input name="tickInterval" />
 
         <button className='settings__button'>Save settings</button>
       </form>
