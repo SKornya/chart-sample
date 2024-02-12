@@ -1,42 +1,49 @@
 import { FunctionComponent, useState, useRef, useEffect } from 'react';
 import * as Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import exportingOption from 'highcharts/modules/exporting';
+import offlineOption from 'highcharts/modules/offline-exporting';
 
 import options from '../../utils/commonPlotOptions';
 import Settings from '../Settings/Settings';
 
-export interface AxisInterface {
-  // min: number | null;
-  // max: number | null;
-  // minorTickInterval: number | null;
-  [key: string]: number | null;
-}
+import './Chart.less';
 
 const Chart: FunctionComponent = () => {
   const [data, setData] = useState<Array<number>>([]);
   const [categories, setCategories] = useState<Array<string>>([]);
-  const [yAxis, setYAxis] = useState<AxisInterface>({
+  const [yAxis, setYAxis] = useState<Highcharts.YAxisOptions>({
     min: null,
     max: null,
-    minorTickInterval: null,
+    minorTickInterval: 'auto',
   });
 
-  const extendedOptions = {
+  exportingOption(Highcharts);
+  offlineOption(Highcharts);
+
+  const desiredTickCount = 10;
+
+  const extendedOptions: Highcharts.Options = {
     ...options,
 
     xAxis: {
       categories,
-      minorTicks: true,
+      tickInterval: Math.ceil(categories.length / desiredTickCount),
+      title: {
+        text: 'Time',
+      }
     },
     yAxis: {
       ...yAxis,
-      minorTick: true,
+      title: {
+        text: 'Watts',
+      }
     },
     series: [
       {
         type: 'spline',
         data,
-        name: 'Plot',
+        name: 'Power',
         marker: {
           enabled: false,
         },
@@ -45,6 +52,24 @@ const Chart: FunctionComponent = () => {
     tooltip: {
       headerFormat: '<b>{series.name}</b><br/>',
       pointFormat: '{point.x}: {point.y}',
+    },
+    exporting: {
+      chartOptions: {
+        chart: {
+          width: 1000,
+          height: 500,
+        },
+      },
+      buttons: {
+        contextButton: {
+          menuItems: [
+            'downloadPNG',
+            'downloadJPEG',
+            'downloadPDF',
+            'downloadSVG',
+          ],
+        },
+      },
     },
   };
 
@@ -56,13 +81,16 @@ const Chart: FunctionComponent = () => {
     const mins = date.getMinutes();
 
     setData([...data, Math.round(Math.random() * 1000) / 100]);
-    setCategories([...categories, `${hours}:${mins}`]);
+    setCategories([
+      ...categories,
+      `${hours}:${mins >= 10 ? mins : `0${mins}`}`,
+    ]);
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
       addPoint();
-    }, 1000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -73,16 +101,13 @@ const Chart: FunctionComponent = () => {
     <div className="plot">
       <Settings setYAxis={setYAxis} />
 
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={extendedOptions}
-        ref={chartComponentRef}
-        className="plot__picture"
-      />
-
-      <button onClick={addPoint} className="plot__button">
-        Add point
-      </button>
+      <div className="plot__container">
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={extendedOptions}
+          ref={chartComponentRef}
+        />
+      </div>
     </div>
   );
 };

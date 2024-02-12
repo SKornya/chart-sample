@@ -1,8 +1,11 @@
 import React, { FormEvent, FunctionComponent, useRef } from 'react';
-import { AxisInterface } from '../Chart/Chart';
+// import { AxisInterface } from '../Chart/Chart';
+import Input from '../Input/Input';
+
+import './Settings.less';
 
 interface SettingsProps {
-  setYAxis: React.Dispatch<React.SetStateAction<AxisInterface>>;
+  setYAxis: React.Dispatch<React.SetStateAction<Highcharts.YAxisOptions>>;
 }
 
 const Settings: FunctionComponent<SettingsProps> = ({ setYAxis }) => {
@@ -21,16 +24,17 @@ const Settings: FunctionComponent<SettingsProps> = ({ setYAxis }) => {
 
     console.log(formDataObject);
 
-    setYAxis(formDataObject);
+    setYAxis(formDataObject as Highcharts.YAxisOptions);
   };
 
   return (
-    <div className="plot__settings">
+    <div className="settings">
       <form ref={formRef} onSubmit={setSettings}>
-        <input type="text" name="min" />
-        <input type="text" name="max" />
-        <input type="text" name="minorTickInterval" />
-        <button>Save settings</button>
+        <Input name="min" />
+        <Input name="max" />
+        <Input name="minorTickInterval" />
+
+        <button className='settings__button'>Save settings</button>
       </form>
     </div>
   );

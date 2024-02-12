@@ -1,9 +1,12 @@
 const options: Highcharts.Options = {
   title: {
-    text: 'Chart',
+    text: '',
   },
   lang: {
     noData: 'No data yet',
+  },
+  chart: {
+    height: 500,
   },
 };
 
